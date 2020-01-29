@@ -42,8 +42,26 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: BuiltTabNavigator(
         activeTabColor: Colors.red,
-        inactiveTabColor: Colors.purple,
-        tabContainerBackgroundColor: Colors.purple[100],
+        inactiveTabColor: Colors.white,
+        bodyBuilder: (context, tabs, tabView) {
+          return Column(
+            children: <Widget>[
+              Material(
+                elevation: 9,
+                color: Colors.blue[200],
+                child: Container(
+                  height: 100,
+                  child: Row(
+                    children: tabs,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: tabView,
+              ),
+            ],
+          );
+        },
         tabs: {
           ExampleTabs.example1: TabRoutesDefinition(
             initialRoute: Example1Routes.root,

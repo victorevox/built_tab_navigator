@@ -92,7 +92,7 @@ BuiltTabNavigator(
 ```
 ### Changing Layout is super easy!
 
-  <img src="https://raw.githubusercontent.com/victorevox/built_tab_navigator/master/example/Screenshot_3.png" align = "right" height = "350" alt="Network">
+  <img src="https://raw.githubusercontent.com/victorevox/built_tab_navigator/master/example/Screenshot_5.png" align = "right" height = "350" alt="Network">
 
 ```dart
 BuiltTabNavigator(
@@ -143,6 +143,7 @@ BuiltTabNavigator(
 ## Screenshots
 <img src="https://raw.githubusercontent.com/victorevox/built_tab_navigator/master/example/Screenshot_2.png"  height = "350" alt="Network">
 <img src="https://raw.githubusercontent.com/victorevox/built_tab_navigator/master/example/example.gif"  height = "350" alt="Network">
+<img src="https://raw.githubusercontent.com/victorevox/built_tab_navigator/master/example/Screenshot_4.png"  height = "350" alt="Network">
 
 You can try the [example](https://github.com/victorevox/built_tab_navigator/tree/master/example)
 
