@@ -1,3 +1,9 @@
+## [0.1.4] - 28/01/20.
+
+* Added navigation observer callbacks
+* Added ```BuiltTabNavigatorState``` API to get inner navigator routeContext ```getTabNavigatorState```
+* Update README.md
+
 ## [0.1.3] - 28/01/20.
 
 * Expose ```BuiltTabNavigatorState``` so it can be accesed via ```GlobalKey<BuiltTabNavigatorState>```

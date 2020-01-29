@@ -1,6 +1,7 @@
 library built_tab_navigator;
 
 import 'package:built_tab_navigator/tab_navigator.dart';
+import 'package:built_tab_navigator/tab_page_route.dart';
 import 'package:built_value/built_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -31,14 +32,6 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
     Widget icon,
     Function() cb,
   ) tabBuilder;
-
-  // /// Builds a
-  // final Widget Function(
-  //   BuildContext context,
-  //   T tab,
-  //   TabRoutesDefinition definition,
-  //   bool isSelected,
-  // ) tabViewBuilder;
 
   /// Defines [Color] used for the tab [title] and [icon] when [tab] is active
   final Color activeTabColor;
@@ -75,6 +68,18 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   /// Change defaults tab container background
   final Color tabContainerBackgroundColor;
 
+  /// [didPop] navigationObserver callback
+  final void Function(T tab, Route route, Route previousRoute) didPop;
+
+  /// [didPush] navigationObserver callback
+  final void Function(T tab, Route route, Route previousRoute) didPush;
+
+  /// [didRemove] navigationObserver callback
+  final void Function(T tab, Route route, Route previousRoute) didRemove;
+
+  /// [didReplace] navigationObserver callback
+  final void Function(T tab, Route newRoute, Route oldRoute) didReplace;
+
   BuiltTabNavigator({
     Key key,
     @required this.tabs,
@@ -88,6 +93,10 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
     this.onGenerateRoute,
     this.activeTab,
     this.tabContainerBackgroundColor,
+    this.didPop,
+    this.didPush,
+    this.didRemove,
+    this.didReplace,
   }) : super(key: key);
 
   @override
@@ -97,6 +106,7 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
 class BuiltTabNavigatorState<T extends EnumClass>
     extends State<BuiltTabNavigator> {
   Map<T, GlobalKey<NavigatorState>> _navigatorKeys;
+  Map<T, GlobalKey<TabNavigatorState>> _tabNavigatorKeys;
   T _currentTab;
 
   Map<T, NavigatorState> get navigatorKeys {
@@ -110,8 +120,11 @@ class BuiltTabNavigatorState<T extends EnumClass>
     super.initState();
     _currentTab =
         widget.activeTab != null ? widget.activeTab : widget.tabs.keys.first;
-    _navigatorKeys = widget.tabs.map((index, _) {
-      return MapEntry(index, GlobalKey<NavigatorState>());
+    _navigatorKeys = widget.tabs.map((tab, _) {
+      return MapEntry(tab, GlobalKey<NavigatorState>());
+    });
+    _tabNavigatorKeys = widget.tabs.map((tab, _) {
+      return MapEntry(tab, GlobalKey<TabNavigatorState>());
     });
   }
 
@@ -123,13 +136,21 @@ class BuiltTabNavigatorState<T extends EnumClass>
         : _defaultBodyBuilder(context, _buildTabs(), _buildTabViews());
   }
 
-  // /// returns internal [NavigatorState] of give [T] tab
-  // /// 
+  /// returns internal [NavigatorState] of give [T] tab
   NavigatorState getTabNavigatorState(T tab) {
-    if(_navigatorKeys == null) {
+    if (_navigatorKeys == null) {
       return null;
     }
     return _navigatorKeys[tab].currentState;
+  }
+
+  /// returns internal [BuildContext] of give [T] tab
+  ///
+  BuildContext getTabNavigatorBuildContext(T tab) {
+    if (_navigatorKeys == null) {
+      return null;
+    }
+    return _tabNavigatorKeys[tab].currentState.buildContext;
   }
 
   _defaultBodyBuilder(
@@ -268,10 +289,16 @@ class BuiltTabNavigatorState<T extends EnumClass>
   ) {
     return Offstage(
       offstage: _currentTab != tab,
-      child: TabNavigator(
+      child: TabNavigator<T>(
+        tab: tab,
+        key: _tabNavigatorKeys[tab],
         navigatorKey: _navigatorKeys[tab],
         initialRoute: definition.initialRoute.name,
         routes: definition.routes,
+        didPop: widget.didPop,
+        didPush: widget.didPush,
+        didRemove: widget.didRemove,
+        didReplace: widget.didReplace,
         onGenerateRoute: (routeSettings, route) {
           final onGenerateRoute = widget.onGenerateRoute;
           if (onGenerateRoute != null) {

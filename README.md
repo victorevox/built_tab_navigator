@@ -140,6 +140,57 @@ BuiltTabNavigator(
 )
 ```
 
+## Available API Options
+
+```dart
+  /// Defines [Color] used for the tab [title] and [icon] when [tab] is active
+  final Color activeTabColor;
+
+  /// Defines [Color] used for the tab [title] and [icon] when [tab] is inactive
+  final Color inactiveTabColor;
+
+  /// Defines a tap handler when a [tab]
+  final Function(T) tabTap;
+
+  /// Builds a custom [title] [Widget]
+  final Widget Function(
+    BuildContext context,
+    T tab,
+    TabRoutesDefinition definition,
+    bool isSelected,
+  ) titleBuilder;
+
+  /// Builds a custom [icon] [Widget]
+  final Widget Function(
+    BuildContext context,
+    T tab,
+    TabRoutesDefinition definition,
+    bool isSelected,
+  ) iconBuilder;
+
+  /// Called everytime a route is being generated, it passes the actual [RouteSettings], the [T] tab who owns that navigator, and the actual route used to produce the page
+  final Function(RouteSettings routeSettings, T tab, EnumClass route)
+      onGenerateRoute;
+
+  /// Set [activetab], if not defined will default to the firs [tab] key defined at [tabs]
+  final T activeTab;
+
+  /// Change defaults tab container background
+  final Color tabContainerBackgroundColor;
+
+  /// [didPop] navigationObserver callback
+  final void Function(T tab, Route route, Route previousRoute) didPop;
+
+  /// [didPush] navigationObserver callback
+  final void Function(T tab, Route route, Route previousRoute) didPush;
+
+  /// [didRemove] navigationObserver callback
+  final void Function(T tab, Route route, Route previousRoute) didRemove;
+
+  /// [didReplace] navigationObserver callback
+  final void Function(T tab, Route newRoute, Route oldRoute) didReplace;
+```
+
 ## Screenshots
 <img src="https://raw.githubusercontent.com/victorevox/built_tab_navigator/master/example/Screenshot_2.png"  height = "350" alt="Network">
 <img src="https://raw.githubusercontent.com/victorevox/built_tab_navigator/master/example/example.gif"  height = "350" alt="Network">
