@@ -65,10 +65,14 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   ) iconBuilder;
 
   /// Called everytime a route is being generated, it passes the actual [RouteSettings], the [T] tab who owns that navigator, and the actual route used to produce the page
-  final Function(RouteSettings routeSettings, T tab, EnumClass route) onGenerateRoute;
+  final Function(RouteSettings routeSettings, T tab, EnumClass route)
+      onGenerateRoute;
 
   /// Set [activetab], if not defined will default to the firs [tab] key defined at [tabs]
   final T activeTab;
+
+  /// Change defaults tab container background
+  final Color tabContainerBackgroundColor;
 
   BuiltTabNavigator({
     Key key,
@@ -79,7 +83,10 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
     this.tabTap,
     this.inactiveTabColor,
     this.titleBuilder,
-    this.iconBuilder, this.onGenerateRoute, this.activeTab,
+    this.iconBuilder,
+    this.onGenerateRoute,
+    this.activeTab,
+    this.tabContainerBackgroundColor,
   }) : super(key: key);
 
   @override
@@ -94,7 +101,8 @@ class _BuiltTabNavigatorState<T extends EnumClass>
   @override
   void initState() {
     super.initState();
-    _currentTab = widget.activeTab != null? widget.activeTab : widget.tabs.keys.first;
+    _currentTab =
+        widget.activeTab != null ? widget.activeTab : widget.tabs.keys.first;
     _navigatorKeys = widget.tabs.map((index, _) {
       return MapEntry(index, GlobalKey<NavigatorState>());
     });
@@ -102,7 +110,7 @@ class _BuiltTabNavigatorState<T extends EnumClass>
 
   @override
   Widget build(BuildContext context) {
-    _currentTab = widget.activeTab?? _currentTab;
+    _currentTab = widget.activeTab ?? _currentTab;
     return widget.bodyBuilder != null
         ? widget.bodyBuilder(context, _buildTabs(), _buildTabViews())
         : _defaultBodyBuilder(context, _buildTabs(), _buildTabViews());
@@ -123,11 +131,13 @@ class _BuiltTabNavigatorState<T extends EnumClass>
         Container(
           height: 60,
           child: Material(
-            elevation: 26,
-            color: Colors.black,
+            elevation: 9,
+            // color: Colors.red,
             shadowColor: Colors.black,
             child: BottomAppBar(
+              color: widget.tabContainerBackgroundColor,
               child: Container(
+                // decoration: BoxDecoration(color: Colors.red),
                 child: Row(
                   mainAxisSize: MainAxisSize.max,
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
