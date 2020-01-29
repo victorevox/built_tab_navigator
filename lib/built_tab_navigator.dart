@@ -91,10 +91,10 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _BuiltTabNavigatorState<T> createState() => _BuiltTabNavigatorState<T>();
+  BuiltTabNavigatorState<T> createState() => BuiltTabNavigatorState<T>();
 }
 
-class _BuiltTabNavigatorState<T extends EnumClass>
+class BuiltTabNavigatorState<T extends EnumClass>
     extends State<BuiltTabNavigator> {
   Map<T, GlobalKey<NavigatorState>> _navigatorKeys;
   T _currentTab;
@@ -125,12 +125,12 @@ class _BuiltTabNavigatorState<T extends EnumClass>
 
   // /// returns internal [NavigatorState] of give [T] tab
   // /// 
-  // NavigatorState getTabNavigatorState(T tab) {
-  //   if(_navigatorKeys == null) {
-  //     return null;
-  //   }
-  //   return _navigatorKeys[tab].currentState;
-  // }
+  NavigatorState getTabNavigatorState(T tab) {
+    if(_navigatorKeys == null) {
+      return null;
+    }
+    return _navigatorKeys[tab].currentState;
+  }
 
   _defaultBodyBuilder(
     BuildContext context,

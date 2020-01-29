@@ -1,3 +1,7 @@
+## [0.1.3] - 28/01/20.
+
+* Expose ```BuiltTabNavigatorState``` so it can be accesed via ```GlobalKey<BuiltTabNavigatorState>```
+
 ## [0.1.2] - 28/01/20.
 
 * Added new getter to state: `navigatorKeys`, useful for retriving tabs NavigatorState , ie: via ```GlobalKey<State<BuiltTabNavigator>>```
