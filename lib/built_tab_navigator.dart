@@ -23,13 +23,14 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   /// Builds a custom [tab] widget for each tab, make sure to call the [cb] parameter if you're using a custom [GestureDetector|InkWell]  or whatever widget that could handle touch events
   /// calling [cb] will trigger state build and change tab content as expected
   final Widget Function(
-      BuildContext context,
-      T tab,
-      TabRoutesDefinition definition,
-      bool isSelected,
-      Widget title,
-      Widget icon,
-      Function() cb) tabBuilder;
+    BuildContext context,
+    T tab,
+    TabRoutesDefinition definition,
+    bool isSelected,
+    Widget title,
+    Widget icon,
+    Function() cb,
+  ) tabBuilder;
 
   // /// Builds a
   // final Widget Function(
@@ -98,6 +99,12 @@ class _BuiltTabNavigatorState<T extends EnumClass>
   Map<T, GlobalKey<NavigatorState>> _navigatorKeys;
   T _currentTab;
 
+  Map<T, NavigatorState> get navigatorKeys {
+    return _navigatorKeys.map((tab, navigatorKey) {
+      return MapEntry(tab, navigatorKey.currentState);
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -115,6 +122,15 @@ class _BuiltTabNavigatorState<T extends EnumClass>
         ? widget.bodyBuilder(context, _buildTabs(), _buildTabViews())
         : _defaultBodyBuilder(context, _buildTabs(), _buildTabViews());
   }
+
+  // /// returns internal [NavigatorState] of give [T] tab
+  // /// 
+  // NavigatorState getTabNavigatorState(T tab) {
+  //   if(_navigatorKeys == null) {
+  //     return null;
+  //   }
+  //   return _navigatorKeys[tab].currentState;
+  // }
 
   _defaultBodyBuilder(
     BuildContext context,
@@ -257,8 +273,9 @@ class _BuiltTabNavigatorState<T extends EnumClass>
         initialRoute: definition.initialRoute.name,
         routes: definition.routes,
         onGenerateRoute: (routeSettings, route) {
-          if (widget.onGenerateRoute != null) {
-            widget.onGenerateRoute(routeSettings, tab, route);
+          final onGenerateRoute = widget.onGenerateRoute;
+          if (onGenerateRoute != null) {
+            onGenerateRoute(routeSettings, tab, route);
           }
         },
       ),

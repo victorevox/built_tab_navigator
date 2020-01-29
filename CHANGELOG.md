@@ -1,3 +1,6 @@
+## [0.1.2] - 28/01/20.
+
+* Added new getter to state: `navigatorKeys`, useful for retriving tabs NavigatorState , ie: via ```GlobalKey<State<BuiltTabNavigator>>```
 ## [0.1.1] - 28/01/20.
 
 * Updated README
