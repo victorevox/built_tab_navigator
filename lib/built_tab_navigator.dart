@@ -183,8 +183,8 @@ class _BuiltTabNavigatorState<T extends EnumClass>
     bool isSelected,
   ) {
     final Color color = _currentTab == tab
-        ? widget.activeTabColor ?? Colors.blue[200]
-        : widget.inactiveTabColor ?? Colors.grey[300];
+        ? widget.activeTabColor ?? Colors.blue[400]
+        : widget.inactiveTabColor ?? Colors.grey[400];
     final tapHandler = () {
       if (widget.tabTap != null) {
         widget.tabTap(tab);
