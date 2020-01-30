@@ -1,3 +1,7 @@
+## [0.1.5] - 30/01/20.
+
+* Added new API ```overridePopBehavior``` to allow nested navigation to pop just inner stack or root navigator if prefered
+
 ## [0.1.4] - 28/01/20.
 
 * Added navigation observer callbacks

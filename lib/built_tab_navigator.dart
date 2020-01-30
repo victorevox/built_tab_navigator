@@ -1,7 +1,6 @@
 library built_tab_navigator;
 
 import 'package:built_tab_navigator/tab_navigator.dart';
-import 'package:built_tab_navigator/tab_page_route.dart';
 import 'package:built_value/built_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -80,6 +79,11 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   /// [didReplace] navigationObserver callback
   final void Function(T tab, Route newRoute, Route oldRoute) didReplace;
 
+  /// If [true] , it will implement [WillPopScope] widget for the nested navigation views, if [false],
+  /// back navigation will target the root navigator
+  /// defaults to [true]
+  final bool overridePopBehavior;
+
   BuiltTabNavigator({
     Key key,
     @required this.tabs,
@@ -97,6 +101,7 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
     this.didPush,
     this.didRemove,
     this.didReplace,
+    this.overridePopBehavior = true,
   }) : super(key: key);
 
   @override
@@ -131,9 +136,19 @@ class BuiltTabNavigatorState<T extends EnumClass>
   @override
   Widget build(BuildContext context) {
     _currentTab = widget.activeTab ?? _currentTab;
-    return widget.bodyBuilder != null
+    final Widget body = widget.bodyBuilder != null
         ? widget.bodyBuilder(context, _buildTabs(), _buildTabViews())
         : _defaultBodyBuilder(context, _buildTabs(), _buildTabViews());
+    return widget.overridePopBehavior
+        ? WillPopScope(
+            onWillPop: () async {
+              return !await _navigatorKeys[_currentTab].currentState.maybePop();
+            },
+            child: widget.bodyBuilder != null
+                ? widget.bodyBuilder(context, _buildTabs(), _buildTabViews())
+                : _defaultBodyBuilder(context, _buildTabs(), _buildTabViews()),
+          )
+        : body;
   }
 
   /// returns internal [NavigatorState] of give [T] tab
