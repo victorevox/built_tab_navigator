@@ -1,3 +1,9 @@
+## [0.1.6] - 30/01/20.
+
+* Added new property ```tabsHeight```
+* Removed use of [`BottomNavigationBar`] to prevent errors when not using the widget inside `Scaffold` or weird styles overrides
+* Fix `iconBuilder` not being called if not `tabIcon` was defined
+
 ## [0.1.5] - 30/01/20.
 
 * Added new API ```overridePopBehavior``` to allow nested navigation to pop just inner stack or root navigator if prefered

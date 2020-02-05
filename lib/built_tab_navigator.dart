@@ -84,6 +84,11 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   /// defaults to [true]
   final bool overridePopBehavior;
 
+  /// Set a custom [height] for the tabs container
+  /// defaults to [60]
+  /// This property doesnt take any effect if [bodyBuilder] is defined
+  final double tabsHeight;
+
   BuiltTabNavigator({
     Key key,
     @required this.tabs,
@@ -102,6 +107,7 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
     this.didRemove,
     this.didReplace,
     this.overridePopBehavior = true,
+    this.tabsHeight = 60,
   }) : super(key: key);
 
   @override
@@ -181,20 +187,17 @@ class BuiltTabNavigatorState<T extends EnumClass>
           ),
         ),
         Container(
-          height: 60,
+          height: widget.tabsHeight,
           child: Material(
             elevation: 9,
             // color: Colors.red,
             shadowColor: Colors.black,
-            child: BottomAppBar(
-              color: widget.tabContainerBackgroundColor,
-              child: Container(
-                // decoration: BoxDecoration(color: Colors.red),
-                child: Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: tabs,
-                ),
+            child: Container(
+              // decoration: BoxDecoration(color: Colors.red),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: tabs,
               ),
             ),
           ),
@@ -285,7 +288,7 @@ class BuiltTabNavigatorState<T extends EnumClass>
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[]
-                  ..addAll(definition.tabIcon != null
+                  ..addAll(icon != null
                       ? [
                           icon,
                         ]
