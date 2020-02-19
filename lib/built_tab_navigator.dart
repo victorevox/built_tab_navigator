@@ -1,9 +1,10 @@
 library built_tab_navigator;
 
-import 'package:built_tab_navigator/tab_navigator.dart';
 import 'package:built_value/built_value.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+
+part 'tab_navigator.dart';
 
 class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   /// Defines default [selectedTab]
@@ -57,9 +58,14 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
     bool isSelected,
   ) iconBuilder;
 
-  /// Called everytime a route is being generated, it passes the actual [RouteSettings], the [T] tab who owns that navigator, and the actual route used to produce the page
-  final Function(RouteSettings routeSettings, T tab, EnumClass route)
-      onGenerateRoute;
+  /// Called everytime a route is being generated, it passes
+  /// the actual [RouteSettings],
+  /// the tab [T] who owns that navigator,
+  /// the actual route [EnumClass] used to produce the page
+  /// and the page builder [WidgetBuilder] based on the routes defined
+  /// This can be used to return a custom PageRoute Wrapper like `MaterialPageRoute` or wraps the builder with a custom animation, etc
+  final Route<dynamic> Function(RouteSettings routeSettings, T tab,
+      EnumClass route, WidgetBuilder child) onGenerateRoute;
 
   /// Set [activetab], if not defined will default to the firs [tab] key defined at [tabs]
   final T activeTab;
@@ -305,27 +311,30 @@ class BuiltTabNavigatorState<T extends EnumClass>
     TabRoutesDefinition definition,
     bool isSelected,
   ) {
+    final TabNavigator tabNavigator = TabNavigator<T>(
+      tab: tab,
+      key: _tabNavigatorKeys[tab],
+      navigatorKey: _navigatorKeys[tab],
+      initialRoute: definition.initialRoute.name,
+      routes: definition.routes,
+      didPop: widget.didPop,
+      didPush: widget.didPush,
+      didRemove: widget.didRemove,
+      didReplace: widget.didReplace,
+      onGenerateRoute: widget.onGenerateRoute,
+    );
     return Offstage(
       offstage: _currentTab != tab,
-      child: TabNavigator<T>(
-        tab: tab,
-        key: _tabNavigatorKeys[tab],
-        navigatorKey: _navigatorKeys[tab],
-        initialRoute: definition.initialRoute.name,
-        routes: definition.routes,
-        didPop: widget.didPop,
-        didPush: widget.didPush,
-        didRemove: widget.didRemove,
-        didReplace: widget.didReplace,
-        onGenerateRoute: (routeSettings, route) {
-          final onGenerateRoute = widget.onGenerateRoute;
-          if (onGenerateRoute != null) {
-            onGenerateRoute(routeSettings, tab, route);
-          }
-        },
-      ),
+      child: _defaultScreenWrapper(tabNavigator, _currentTab == tab),
     );
   }
+}
+
+Widget _defaultScreenWrapper(Widget navigator, bool active) {
+  return _OpacityAnimationWrapper(
+    child: navigator,
+    show: active,
+  );
 }
 
 class TabRoutesDefinition<T extends EnumClass> {
