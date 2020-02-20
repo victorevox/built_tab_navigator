@@ -1,3 +1,9 @@
+## [0.1.7] - 20/02/20.
+
+* Changed behavior of [onGenerateRoute] prperty, now it can be used to override the [Route] returned by `onGenerateRoute` of [Navigator].
+* Added an opacity transition when changing tabs, transition can be customized by [contentAnimationDuration] property.
+* Added ability to implement a custom builder to override each tab content wrapper, this can be used to implement a custom animation
+
 ## [0.1.6] - 30/01/20.
 
 * Added new property ```tabsHeight```

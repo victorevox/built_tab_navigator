@@ -80,11 +80,9 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
           settings: routeSettings,
           builder: (context) {
             _buildContext = context;
-            return _OpacityAnimationWrapper(
-              child: builder != null
+            return builder != null
                   ? builder(context)
-                  : Text("No implemented: ${routeSettings.name}"),
-            );
+                  : Text("No implemented: ${routeSettings.name}");
           },
         );
       },
@@ -167,10 +165,12 @@ class _TabNavigatorObserver<T extends EnumClass> extends NavigatorObserver {
 class _OpacityAnimationWrapper extends StatefulWidget {
   final Widget child;
   final bool show;
+  final Duration duration;
   _OpacityAnimationWrapper({
     Key key,
-    this.child,
+    @required this.child,
     this.show = false,
+    @required this.duration,
   }) : super(key: key);
 
   @override
@@ -186,8 +186,7 @@ class __OpacityAnimationWrapperState extends State<_OpacityAnimationWrapper> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       setState(() {
-        // _setOpacity();
-        _opacity = 1;
+        _setOpacity();
       });
     });
   }
@@ -202,6 +201,7 @@ class __OpacityAnimationWrapperState extends State<_OpacityAnimationWrapper> {
 
   _setOpacity() {
     _opacity = widget.show ? 1 : 0;
+    print(_opacity);
   }
 
   @override
@@ -209,7 +209,7 @@ class __OpacityAnimationWrapperState extends State<_OpacityAnimationWrapper> {
     return AnimatedOpacity(
       duration: Duration(milliseconds: 450),
       opacity: _opacity,
-      curve: Curves.bounceIn,
+      curve: Curves.easeIn,
       child: widget.child,
     );
   }
