@@ -143,6 +143,20 @@ BuiltTabNavigator(
 ## Available API Options
 
 ```dart
+  /// Defines default [selectedTab]
+
+  /// Defines the [tabs] of this widget
+  /// Each [tab] must define a [TabRoutesDefinition]
+  final Map<T, TabRoutesDefinition> tabs;
+
+  /// Defines a [bodyBuilder], if you need something very custom, maybe the tabs located at different position: ie on Top
+  /// you can place [tabs] and [tabsViews] in a custom layout arrangement
+  final BodyBuilder bodyBuilder;
+
+  /// Builds a custom [tab] widget for each tab, make sure to call the [cb] parameter if you're using a custom [GestureDetector|InkWell]  or whatever widget that could handle touch events
+  /// calling [cb] will trigger state build and change tab content as expected
+  final TabBuilder<T> tabBuilder;
+
   /// Defines [Color] used for the tab [title] and [icon] when [tab] is active
   final Color activeTabColor;
 
@@ -153,24 +167,18 @@ BuiltTabNavigator(
   final Function(T) tabTap;
 
   /// Builds a custom [title] [Widget]
-  final Widget Function(
-    BuildContext context,
-    T tab,
-    TabRoutesDefinition definition,
-    bool isSelected,
-  ) titleBuilder;
+  final TitleBuilder<T> titleBuilder;
 
   /// Builds a custom [icon] [Widget]
-  final Widget Function(
-    BuildContext context,
-    T tab,
-    TabRoutesDefinition definition,
-    bool isSelected,
-  ) iconBuilder;
+  final IconBuilder<T> iconBuilder;
 
-  /// Called everytime a route is being generated, it passes the actual [RouteSettings], the [T] tab who owns that navigator, and the actual route used to produce the page
-  final Function(RouteSettings routeSettings, T tab, EnumClass route)
-      onGenerateRoute;
+  /// Called everytime a route is being generated, it passes
+  /// the actual [RouteSettings],
+  /// the tab [T] who owns that navigator,
+  /// the actual route [EnumClass] used to produce the page
+  /// and the page builder [WidgetBuilder] based on the routes defined
+  /// This can be used to return a custom PageRoute Wrapper like `MaterialPageRoute` or wraps the builder with a custom animation, etc
+  final OnGenerateRouteFn<T> onGenerateRoute;
 
   /// Set [activetab], if not defined will default to the firs [tab] key defined at [tabs]
   final T activeTab;
@@ -189,6 +197,30 @@ BuiltTabNavigator(
 
   /// [didReplace] navigationObserver callback
   final void Function(T tab, Route newRoute, Route oldRoute) didReplace;
+
+  /// If [true] , it will implement [WillPopScope] widget for the nested navigation views, if [false],
+  /// back navigation will target the root navigator
+  /// defaults to [true]
+  final bool overridePopBehavior;
+
+  /// Set a custom [height] for the tabs container
+  /// defaults to [60]
+  /// This property doesnt take any effect if [bodyBuilder] is defined
+  final double tabsHeight;
+
+  /// Defines a cutom builder for the widget that wraps each tab content,
+  /// This can be useful for bulding a Widget that implements a custom animation
+  /// params:
+  /// [BuildContext] The current context
+  /// [EnumClass] The current `tab` being builded
+  /// [bool] if the current `tab` is active
+  /// [Widget] The actual content to be wraped, you neend to pass this widget as a child of your Widget implementation
+  final TabContentWrapBuilder contentWrapBuilder;
+
+  /// Define a custom duration for the opacity transition implemented
+  /// This has no effect if you're implementing a custom [contentWrapBuilder]
+  /// Defaults to [Duration(400ms)]
+  final Duration contentAnimationDuration;
 ```
 
 ## Screenshots
