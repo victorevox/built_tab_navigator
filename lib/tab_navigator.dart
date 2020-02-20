@@ -1,5 +1,4 @@
-import 'package:built_value/built_value.dart';
-import 'package:flutter/material.dart';
+part of built_tab_navigator;
 
 class TabNavigator<T extends EnumClass> extends StatefulWidget {
   TabNavigator({
@@ -20,8 +19,8 @@ class TabNavigator<T extends EnumClass> extends StatefulWidget {
   final GlobalKey<NavigatorState> navigatorKey;
   final Map<EnumClass, Widget Function(BuildContext)> routes;
   final String initialRoute;
-  final void Function(RouteSettings routeSettings, EnumClass route)
-      onGenerateRoute;
+  final Route<dynamic> Function(RouteSettings routeSettings, EnumClass route,
+      EnumClass tab, WidgetBuilder child) onGenerateRoute;
   final T tab;
 
   /// [didPop] navigationObserver callback
@@ -59,28 +58,31 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
     return Navigator(
       key: widget.navigatorKey,
       initialRoute: widget.initialRoute,
-      observers: [_TabNavigatorObserver<T>(
-        widget.tab,
-        didPop: widget.didPop,
-        didPush: widget.didPush,
-        didRemove: widget.didRemove,
-        didReplace: widget.didReplace,
-      )],
+      observers: [
+        _TabNavigatorObserver<T>(
+          widget.tab,
+          didPop: widget.didPop,
+          didPush: widget.didPush,
+          didRemove: widget.didRemove,
+          didReplace: widget.didReplace,
+        )
+      ],
       onGenerateRoute: (routeSettings) {
         final EnumClass routeEnum = widget.routes.keys.where((route) {
           return route.name == routeSettings.name;
         }).first;
+        final builder = routeBuilders[routeSettings.name];
         if (widget.onGenerateRoute is Function) {
-          widget.onGenerateRoute(routeSettings, routeEnum);
+          return widget.onGenerateRoute(
+              routeSettings, routeEnum, widget.tab, builder);
         }
         return MaterialPageRoute(
           settings: routeSettings,
           builder: (context) {
             _buildContext = context;
-            final builder = routeBuilders[routeSettings.name];
             return builder != null
-                ? builder(context)
-                : Text("No implemented: ${routeSettings.name}");
+                  ? builder(context)
+                  : Text("No implemented: ${routeSettings.name}");
           },
         );
       },
@@ -89,8 +91,8 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
 }
 
 class _TabNavigatorObserver<T extends EnumClass> extends NavigatorObserver {
-
   final T tab;
+
   /// [didPop] navigationObserver callback
   void Function(T tab, Route route, Route previousRoute) _didPop;
 
@@ -103,10 +105,11 @@ class _TabNavigatorObserver<T extends EnumClass> extends NavigatorObserver {
   /// [didReplace] navigationObserver callback
   void Function(T tab, Route newRoute, Route oldRoute) _didReplace;
 
-  _TabNavigatorObserver(T this.tab, {
-    void Function(T tab, Route route, Route previousRoute) didPop, 
-    void Function(T tab, Route route, Route previousRoute) didPush, 
-    void Function(T tab, Route route, Route previousRoute) didRemove, 
+  _TabNavigatorObserver(
+    T this.tab, {
+    void Function(T tab, Route route, Route previousRoute) didPop,
+    void Function(T tab, Route route, Route previousRoute) didPush,
+    void Function(T tab, Route route, Route previousRoute) didRemove,
     void Function(T tab, Route newRoute, Route oldRoute) didReplace,
   }) {
     this._didPop = didPop;
@@ -117,28 +120,28 @@ class _TabNavigatorObserver<T extends EnumClass> extends NavigatorObserver {
 
   @override
   void didPop(Route route, Route previousRoute) {
-    if(_didPop != null) {
+    if (_didPop != null) {
       _didPop(tab, route, previousRoute);
     }
   }
 
   @override
   void didPush(Route route, Route previousRoute) {
-    if(_didPush != null) {
+    if (_didPush != null) {
       _didPush(tab, route, previousRoute);
     }
   }
 
   @override
   void didRemove(Route route, Route previousRoute) {
-    if(_didRemove != null) {
+    if (_didRemove != null) {
       _didRemove(tab, route, previousRoute);
     }
   }
 
   @override
   void didReplace({Route newRoute, Route oldRoute}) {
-    if(_didReplace != null) {
+    if (_didReplace != null) {
       _didReplace(tab, newRoute, oldRoute);
     }
   }
@@ -157,4 +160,57 @@ class _TabNavigatorObserver<T extends EnumClass> extends NavigatorObserver {
   // // TODO: implement navigator
   // NavigatorState get navigator => throw UnimplementedError();
 
+}
+
+class _OpacityAnimationWrapper extends StatefulWidget {
+  final Widget child;
+  final bool show;
+  final Duration duration;
+  _OpacityAnimationWrapper({
+    Key key,
+    @required this.child,
+    this.show = false,
+    @required this.duration,
+  }) : super(key: key);
+
+  @override
+  __OpacityAnimationWrapperState createState() =>
+      __OpacityAnimationWrapperState();
+}
+
+class __OpacityAnimationWrapperState extends State<_OpacityAnimationWrapper> {
+  double _opacity = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      setState(() {
+        _setOpacity();
+      });
+    });
+  }
+
+  @override
+  void didUpdateWidget (_OpacityAnimationWrapper oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if(oldWidget.show != widget.show) {
+      _setOpacity();
+    }
+  }
+
+  _setOpacity() {
+    _opacity = widget.show ? 1 : 0;
+    print(_opacity);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedOpacity(
+      duration: Duration(milliseconds: 450),
+      opacity: _opacity,
+      curve: Curves.easeIn,
+      child: widget.child,
+    );
+  }
 }
