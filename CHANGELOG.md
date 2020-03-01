@@ -1,3 +1,7 @@
+## [0.2.0] - 1/03/20.
+
+* Change `built_value` dependencies to 7.0.x
+
 ## [0.1.7] - 20/02/20.
 
 * Changed behavior of [onGenerateRoute] prperty, now it can be used to override the [Route] returned by `onGenerateRoute` of [Navigator].
