@@ -12,6 +12,7 @@ class TabNavigator<T extends EnumClass> extends StatefulWidget {
     this.didPush,
     this.didRemove,
     this.didReplace,
+    this.observers,
   })  : assert(routes != null),
         assert(navigatorKey != null),
         super(key: key);
@@ -22,6 +23,7 @@ class TabNavigator<T extends EnumClass> extends StatefulWidget {
   final Route<dynamic> Function(RouteSettings routeSettings, EnumClass route,
       EnumClass tab, WidgetBuilder child) onGenerateRoute;
   final T tab;
+  final List<NavigatorObserver> observers;
 
   /// [didPop] navigationObserver callback
   final void Function(T tab, Route route, Route previousRoute) didPop;
@@ -66,7 +68,7 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
           didRemove: widget.didRemove,
           didReplace: widget.didReplace,
         )
-      ],
+      ]..addAll(widget.observers ?? []),
       onGenerateRoute: (routeSettings) {
         final EnumClass routeEnum = widget.routes.keys.where((route) {
           return route.name == routeSettings.name;
@@ -81,8 +83,8 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
           builder: (context) {
             _buildContext = context;
             return builder != null
-                  ? builder(context)
-                  : Text("No implemented: ${routeSettings.name}");
+                ? builder(context)
+                : Text("No implemented: ${routeSettings.name}");
           },
         );
       },
@@ -192,9 +194,9 @@ class __OpacityAnimationWrapperState extends State<_OpacityAnimationWrapper> {
   }
 
   @override
-  void didUpdateWidget (_OpacityAnimationWrapper oldWidget) {
+  void didUpdateWidget(_OpacityAnimationWrapper oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if(oldWidget.show != widget.show) {
+    if (oldWidget.show != widget.show) {
       _setOpacity();
     }
   }

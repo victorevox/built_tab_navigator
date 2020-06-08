@@ -1,6 +1,6 @@
 name: built_tab_navigator
 description: Creates a Tab Style UI with Navigation capabilities.
-version: 0.2.0
+version: 0.2.2
 homepage: https://github.com/victorevox/built_tab_navigator
 
 environment:

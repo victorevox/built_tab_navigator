@@ -279,21 +279,22 @@ class BuiltTabNavigatorState<T extends EnumClass>
           )
         : Expanded(
             child: InkWell(
-            onTap: tapHandler,
-            child: Container(
-              height: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[]
-                  ..addAll(icon != null
-                      ? [
-                          icon,
-                        ]
-                      : [])
-                  ..add(title),
+              onTap: tapHandler,
+              child: Container(
+                height: double.infinity,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[]
+                    ..addAll(icon != null
+                        ? [
+                            icon,
+                          ]
+                        : [])
+                    ..add(title),
+                ),
               ),
             ),
-          ));
+          );
   }
 
   Widget _buildTabView(
@@ -313,6 +314,7 @@ class BuiltTabNavigatorState<T extends EnumClass>
       didRemove: widget.didRemove,
       didReplace: widget.didReplace,
       onGenerateRoute: widget.onGenerateRoute,
+      observers: definition.observers,
     );
     final bool isActive = _currentTab == tab;
     return Offstage(
@@ -325,10 +327,7 @@ class BuiltTabNavigatorState<T extends EnumClass>
               tabNavigator,
             )
           : _defaultScreenWrapper(
-              tabNavigator,
-              isActive,
-              widget.contentAnimationDuration
-            ),
+              tabNavigator, isActive, widget.contentAnimationDuration),
     );
   }
 }
@@ -346,11 +345,13 @@ class TabRoutesDefinition<T extends EnumClass> {
   final EnumClass initialRoute;
   final String tabTitle;
   final IconData tabIcon;
+  final List<RouteObserver> observers;
 
   TabRoutesDefinition({
     @required this.routes,
     @required this.initialRoute,
     this.tabTitle,
     this.tabIcon,
+    this.observers,
   });
 }

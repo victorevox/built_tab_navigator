@@ -1,3 +1,10 @@
+## [0.2.2] - 8/06/20.
+* Add support for `RouteObserver` for `TabRoutesDefinition`
+
+## [0.2.1] - 1/03/20.
+* Implemented here controller, in order to support `Hero` widget inside nested navigators
+
+
 ## [0.2.0] - 1/03/20.
 
 * Change `built_value` dependencies to 7.0.x
