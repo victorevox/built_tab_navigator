@@ -45,6 +45,7 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
   BuildContext _buildContext;
 
   BuildContext get buildContext => _buildContext;
+  HeroController _heroController;
 
   Map<String, WidgetBuilder> _routeBuilders(
     BuildContext context,
@@ -55,12 +56,19 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
   }
 
   @override
+  void initState() { 
+    super.initState();
+    _heroController = HeroController(createRectTween: _createRectTween);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final routeBuilders = _routeBuilders(context);
     return Navigator(
       key: widget.navigatorKey,
       initialRoute: widget.initialRoute,
       observers: [
+        _heroController,
         _TabNavigatorObserver<T>(
           widget.tab,
           didPop: widget.didPop,
@@ -89,6 +97,10 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
         );
       },
     );
+  }
+
+  RectTween _createRectTween(Rect begin, Rect end) {
+    return MaterialRectArcTween(begin: begin, end: end);
   }
 }
 
