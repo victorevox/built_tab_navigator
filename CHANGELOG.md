@@ -1,3 +1,6 @@
+## [0.2.3] - 23/06/20.
+* Change support from `RouteObserver` to `NavigatorObserver` for `TabRoutesDefinition` to be more flexible
+
 ## [0.2.2] - 8/06/20.
 * Add support for `RouteObserver` for `TabRoutesDefinition`
 

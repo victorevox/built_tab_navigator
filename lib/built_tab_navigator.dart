@@ -345,7 +345,7 @@ class TabRoutesDefinition<T extends EnumClass> {
   final EnumClass initialRoute;
   final String tabTitle;
   final IconData tabIcon;
-  final List<RouteObserver> observers;
+  final List<NavigatorObserver> observers;
 
   TabRoutesDefinition({
     @required this.routes,
