@@ -1,3 +1,10 @@
+## [0.2.4] - 05/03/21.
+* Updated de pendencies for:
+    ```
+    built_value: ^8.0.0
+    built_collection: ^5.0.0
+    ```
+
 ## [0.2.3] - 23/06/20.
 * Change support from `RouteObserver` to `NavigatorObserver` for `TabRoutesDefinition` to be more flexible
 
