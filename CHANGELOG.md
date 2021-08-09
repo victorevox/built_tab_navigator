@@ -1,3 +1,6 @@
+## [1.0.0] - 09/08/21.
+* Null Safety
+
 ## [0.2.4] - 05/03/21.
 * Updated de pendencies for:
     ```
