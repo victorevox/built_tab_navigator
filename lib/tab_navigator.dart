@@ -1,11 +1,11 @@
 part of built_tab_navigator;
 
-class TabNavigator<T extends EnumClass> extends StatefulWidget {
+class TabNavigator<T extends EnumClass?> extends StatefulWidget {
   TabNavigator({
-    Key key,
-    @required this.navigatorKey,
-    @required this.routes,
-    @required this.tab,
+    Key? key,
+    required this.navigatorKey,
+    required this.routes,
+    required this.tab,
     this.initialRoute,
     this.onGenerateRoute,
     this.didPop,
@@ -13,39 +13,36 @@ class TabNavigator<T extends EnumClass> extends StatefulWidget {
     this.didRemove,
     this.didReplace,
     this.observers,
-  })  : assert(routes != null),
-        assert(navigatorKey != null),
-        super(key: key);
+  })  : super(key: key);
 
   final GlobalKey<NavigatorState> navigatorKey;
   final Map<EnumClass, Widget Function(BuildContext)> routes;
-  final String initialRoute;
-  final Route<dynamic> Function(RouteSettings routeSettings, EnumClass route,
-      EnumClass tab, WidgetBuilder child) onGenerateRoute;
+  final String? initialRoute;
+  final OnGenerateRouteFn<T>? onGenerateRoute;
   final T tab;
-  final List<NavigatorObserver> observers;
+  final List<NavigatorObserver>? observers;
 
   /// [didPop] navigationObserver callback
-  final void Function(T tab, Route route, Route previousRoute) didPop;
+  final void Function(T tab, Route route, Route? previousRoute)? didPop;
 
   /// [didPush] navigationObserver callback
-  final void Function(T tab, Route route, Route previousRoute) didPush;
+  final void Function(T tab, Route route, Route? previousRoute)? didPush;
 
   /// [didRemove] navigationObserver callback
-  final void Function(T tab, Route route, Route previousRoute) didRemove;
+  final void Function(T tab, Route route, Route? previousRoute)? didRemove;
 
   /// [didReplace] navigationObserver callback
-  final void Function(T tab, Route newRoute, Route oldRoute) didReplace;
+  final void Function(T tab, Route? newRoute, Route? oldRoute)? didReplace;
 
   @override
   TabNavigatorState<T> createState() => TabNavigatorState<T>();
 }
 
-class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
-  BuildContext _buildContext;
+class TabNavigatorState<T extends EnumClass?> extends State<TabNavigator> {
+  BuildContext? _buildContext;
 
-  BuildContext get buildContext => _buildContext;
-  HeroController _heroController;
+  BuildContext? get buildContext => _buildContext;
+  HeroController? _heroController;
 
   Map<String, WidgetBuilder> _routeBuilders(
     BuildContext context,
@@ -68,9 +65,9 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
       key: widget.navigatorKey,
       initialRoute: widget.initialRoute,
       observers: [
-        _heroController,
+        _heroController!,
         _TabNavigatorObserver<T>(
-          widget.tab,
+          widget.tab as T,
           didPop: widget.didPop,
           didPush: widget.didPush,
           didRemove: widget.didRemove,
@@ -81,10 +78,10 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
         final EnumClass routeEnum = widget.routes.keys.where((route) {
           return route.name == routeSettings.name;
         }).first;
-        final builder = routeBuilders[routeSettings.name];
+        final builder = routeBuilders[routeSettings.name!];
         if (widget.onGenerateRoute is Function) {
-          return widget.onGenerateRoute(
-              routeSettings, routeEnum, widget.tab, builder);
+          return widget.onGenerateRoute!(
+              routeSettings, routeEnum, widget.tab!, builder);
         }
         return MaterialPageRoute(
           settings: routeSettings,
@@ -99,32 +96,32 @@ class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
     );
   }
 
-  RectTween _createRectTween(Rect begin, Rect end) {
+  RectTween _createRectTween(Rect? begin, Rect? end) {
     return MaterialRectArcTween(begin: begin, end: end);
   }
 }
 
-class _TabNavigatorObserver<T extends EnumClass> extends NavigatorObserver {
+class _TabNavigatorObserver<T extends EnumClass?> extends NavigatorObserver {
   final T tab;
 
   /// [didPop] navigationObserver callback
-  void Function(T tab, Route route, Route previousRoute) _didPop;
+  void Function(T tab, Route route, Route? previousRoute)? _didPop;
 
   /// [didPush] navigationObserver callback
-  void Function(T tab, Route route, Route previousRoute) _didPush;
+  void Function(T tab, Route route, Route? previousRoute)? _didPush;
 
   /// [didRemove] navigationObserver callback
-  void Function(T tab, Route route, Route previousRoute) _didRemove;
+  void Function(T tab, Route route, Route? previousRoute)? _didRemove;
 
   /// [didReplace] navigationObserver callback
-  void Function(T tab, Route newRoute, Route oldRoute) _didReplace;
+  void Function(T tab, Route? newRoute, Route? oldRoute)? _didReplace;
 
   _TabNavigatorObserver(
     T this.tab, {
-    void Function(T tab, Route route, Route previousRoute) didPop,
-    void Function(T tab, Route route, Route previousRoute) didPush,
-    void Function(T tab, Route route, Route previousRoute) didRemove,
-    void Function(T tab, Route newRoute, Route oldRoute) didReplace,
+    void Function(T tab, Route route, Route? previousRoute)? didPop,
+    void Function(T tab, Route route, Route? previousRoute)? didPush,
+    void Function(T tab, Route route, Route? previousRoute)? didRemove,
+    void Function(T tab, Route? newRoute, Route? oldRoute)? didReplace,
   }) {
     this._didPop = didPop;
     this._didPush = didPush;
@@ -133,30 +130,30 @@ class _TabNavigatorObserver<T extends EnumClass> extends NavigatorObserver {
   }
 
   @override
-  void didPop(Route route, Route previousRoute) {
+  void didPop(Route route, Route? previousRoute) {
     if (_didPop != null) {
-      _didPop(tab, route, previousRoute);
+      _didPop!(tab, route, previousRoute);
     }
   }
 
   @override
-  void didPush(Route route, Route previousRoute) {
+  void didPush(Route route, Route? previousRoute) {
     if (_didPush != null) {
-      _didPush(tab, route, previousRoute);
+      _didPush!(tab, route, previousRoute);
     }
   }
 
   @override
-  void didRemove(Route route, Route previousRoute) {
+  void didRemove(Route route, Route? previousRoute) {
     if (_didRemove != null) {
-      _didRemove(tab, route, previousRoute);
+      _didRemove!(tab, route, previousRoute);
     }
   }
 
   @override
-  void didReplace({Route newRoute, Route oldRoute}) {
+  void didReplace({Route? newRoute, Route? oldRoute}) {
     if (_didReplace != null) {
-      _didReplace(tab, newRoute, oldRoute);
+      _didReplace!(tab, newRoute, oldRoute);
     }
   }
 
@@ -181,10 +178,10 @@ class _OpacityAnimationWrapper extends StatefulWidget {
   final bool show;
   final Duration duration;
   _OpacityAnimationWrapper({
-    Key key,
-    @required this.child,
+    Key? key,
+    required this.child,
     this.show = false,
-    @required this.duration,
+    required this.duration,
   }) : super(key: key);
 
   @override
@@ -198,7 +195,7 @@ class __OpacityAnimationWrapperState extends State<_OpacityAnimationWrapper> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
       setState(() {
         _setOpacity();
       });

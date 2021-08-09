@@ -4,13 +4,13 @@ version: 0.2.4
 homepage: https://github.com/victorevox/built_tab_navigator
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  built_value: ^8.0.0
-  built_collection: ^5.0.0
+  built_value: ^8.1.2
+  built_collection: ^5.1.0
 
 dev_dependencies:
   flutter_test:

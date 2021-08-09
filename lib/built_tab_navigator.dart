@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 part 'tab_navigator.dart';
 part 'types.dart';
 
-class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
+class BuiltTabNavigator<T extends EnumClass?> extends StatefulWidget {
   /// Defines default [selectedTab]
 
   /// Defines the [tabs] of this widget
@@ -16,26 +16,26 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
 
   /// Defines a [bodyBuilder], if you need something very custom, maybe the tabs located at different position: ie on Top
   /// you can place [tabs] and [tabsViews] in a custom layout arrangement
-  final BodyBuilder bodyBuilder;
+  final BodyBuilder? bodyBuilder;
 
   /// Builds a custom [tab] widget for each tab, make sure to call the [cb] parameter if you're using a custom [GestureDetector|InkWell]  or whatever widget that could handle touch events
   /// calling [cb] will trigger state build and change tab content as expected
-  final TabBuilder<T> tabBuilder;
+  final TabBuilder<T>? tabBuilder;
 
   /// Defines [Color] used for the tab [title] and [icon] when [tab] is active
-  final Color activeTabColor;
+  final Color? activeTabColor;
 
   /// Defines [Color] used for the tab [title] and [icon] when [tab] is inactive
-  final Color inactiveTabColor;
+  final Color? inactiveTabColor;
 
   /// Defines a tap handler when a [tab]
-  final Function(T) tabTap;
+  final Function(T)? tabTap;
 
   /// Builds a custom [title] [Widget]
-  final TitleBuilder<T> titleBuilder;
+  final TitleBuilder<T>? titleBuilder;
 
   /// Builds a custom [icon] [Widget]
-  final IconBuilder<T> iconBuilder;
+  final IconBuilder<T>? iconBuilder;
 
   /// Called everytime a route is being generated, it passes
   /// the actual [RouteSettings],
@@ -43,25 +43,25 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   /// the actual route [EnumClass] used to produce the page
   /// and the page builder [WidgetBuilder] based on the routes defined
   /// This can be used to return a custom PageRoute Wrapper like `MaterialPageRoute` or wraps the builder with a custom animation, etc
-  final OnGenerateRouteFn<T> onGenerateRoute;
+  final OnGenerateRouteFn<T>? onGenerateRoute;
 
   /// Set [activetab], if not defined will default to the firs [tab] key defined at [tabs]
-  final T activeTab;
+  final T? activeTab;
 
   /// Change defaults tab container background
-  final Color tabContainerBackgroundColor;
+  final Color? tabContainerBackgroundColor;
 
   /// [didPop] navigationObserver callback
-  final void Function(T tab, Route route, Route previousRoute) didPop;
+  final void Function(T tab, Route route, Route? previousRoute)? didPop;
 
   /// [didPush] navigationObserver callback
-  final void Function(T tab, Route route, Route previousRoute) didPush;
+  final void Function(T tab, Route route, Route? previousRoute)? didPush;
 
   /// [didRemove] navigationObserver callback
-  final void Function(T tab, Route route, Route previousRoute) didRemove;
+  final void Function(T tab, Route route, Route? previousRoute)? didRemove;
 
   /// [didReplace] navigationObserver callback
-  final void Function(T tab, Route newRoute, Route oldRoute) didReplace;
+  final void Function(T tab, Route? newRoute, Route? oldRoute)? didReplace;
 
   /// If [true] , it will implement [WillPopScope] widget for the nested navigation views, if [false],
   /// back navigation will target the root navigator
@@ -80,7 +80,7 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   /// [EnumClass] The current `tab` being builded
   /// [bool] if the current `tab` is active
   /// [Widget] The actual content to be wraped, you neend to pass this widget as a child of your Widget implementation
-  final TabContentWrapBuilder contentWrapBuilder;
+  final TabContentWrapBuilder? contentWrapBuilder;
 
   /// Define a custom duration for the opacity transition implemented
   /// This has no effect if you're implementing a custom [contentWrapBuilder]
@@ -88,8 +88,8 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   final Duration contentAnimationDuration;
 
   BuiltTabNavigator({
-    Key key,
-    @required this.tabs,
+    Key? key,
+    required this.tabs,
     this.bodyBuilder,
     this.tabBuilder,
     this.activeTabColor,
@@ -114,15 +114,15 @@ class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   BuiltTabNavigatorState<T> createState() => BuiltTabNavigatorState<T>();
 }
 
-class BuiltTabNavigatorState<T extends EnumClass>
+class BuiltTabNavigatorState<T extends EnumClass?>
     extends State<BuiltTabNavigator> {
-  Map<T, GlobalKey<NavigatorState>> _navigatorKeys;
-  Map<T, GlobalKey<TabNavigatorState>> _tabNavigatorKeys;
+  Map<T, GlobalKey<NavigatorState>>? _navigatorKeys;
+  late Map<T, GlobalKey<TabNavigatorState>> _tabNavigatorKeys;
   // Map<T, GlobalKey> _animationWrapperKeys;
-  T _currentTab;
+  T? _currentTab;
 
-  Map<T, NavigatorState> get navigatorKeys {
-    return _navigatorKeys.map((tab, navigatorKey) {
+  Map<T, NavigatorState?> get navigatorKeys {
+    return _navigatorKeys!.map((tab, navigatorKey) {
       return MapEntry(tab, navigatorKey.currentState);
     });
   }
@@ -131,48 +131,48 @@ class BuiltTabNavigatorState<T extends EnumClass>
   void initState() {
     super.initState();
     _currentTab =
-        widget.activeTab != null ? widget.activeTab : widget.tabs.keys.first;
+        widget.activeTab != null ? widget.activeTab as T : widget.tabs.keys.first as T;
     _navigatorKeys = widget.tabs.map((tab, _) {
-      return MapEntry(tab, GlobalKey<NavigatorState>());
+      return MapEntry(tab as T, GlobalKey<NavigatorState>());
     });
     _tabNavigatorKeys = widget.tabs.map((tab, _) {
-      return MapEntry(tab, GlobalKey<TabNavigatorState>());
+      return MapEntry(tab as T, GlobalKey<TabNavigatorState>());
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    _currentTab = widget.activeTab ?? _currentTab;
+    _currentTab = widget.activeTab as T? ?? _currentTab;
     final Widget body = widget.bodyBuilder != null
-        ? widget.bodyBuilder(context, _buildTabs(), _buildTabViews())
+        ? widget.bodyBuilder!(context, _buildTabs(), _buildTabViews())
         : _defaultBodyBuilder(context, _buildTabs(), _buildTabViews());
     return widget.overridePopBehavior
         ? WillPopScope(
             onWillPop: () async {
-              return !await _navigatorKeys[_currentTab].currentState.maybePop();
+              return !await _navigatorKeys![_currentTab]!.currentState!.maybePop();
             },
             child: widget.bodyBuilder != null
-                ? widget.bodyBuilder(context, _buildTabs(), _buildTabViews())
+                ? widget.bodyBuilder!(context, _buildTabs(), _buildTabViews())
                 : _defaultBodyBuilder(context, _buildTabs(), _buildTabViews()),
           )
         : body;
   }
 
   /// returns internal [NavigatorState] of give [T] tab
-  NavigatorState getTabNavigatorState(T tab) {
+  NavigatorState? getTabNavigatorState(T tab) {
     if (_navigatorKeys == null) {
       return null;
     }
-    return _navigatorKeys[tab].currentState;
+    return _navigatorKeys![tab]!.currentState;
   }
 
   /// returns internal [BuildContext] of give [T] tab
   ///
-  BuildContext getTabNavigatorBuildContext(T tab) {
+  BuildContext? getTabNavigatorBuildContext(T tab) {
     if (_navigatorKeys == null) {
       return null;
     }
-    return _tabNavigatorKeys[tab].currentState.buildContext;
+    return _tabNavigatorKeys[tab]!.currentState!.buildContext;
   }
 
   _defaultBodyBuilder(
@@ -212,7 +212,7 @@ class BuiltTabNavigatorState<T extends EnumClass>
             tab,
             _buildTab(
               context,
-              tab,
+              tab as T,
               definition,
               _currentTab == tab,
             ),
@@ -230,7 +230,7 @@ class BuiltTabNavigatorState<T extends EnumClass>
                 tab,
                 _buildTabView(
                   context,
-                  tab,
+                  tab as T,
                   definition,
                   _currentTab == tab,
                 ));
@@ -246,19 +246,19 @@ class BuiltTabNavigatorState<T extends EnumClass>
     TabRoutesDefinition definition,
     bool isSelected,
   ) {
-    final Color color = _currentTab == tab
+    final Color? color = _currentTab == tab
         ? widget.activeTabColor ?? Colors.blue[400]
         : widget.inactiveTabColor ?? Colors.grey[400];
     final tapHandler = () {
       if (widget.tabTap != null) {
-        widget.tabTap(tab);
+        widget.tabTap?.call(tab);
       }
       setState(() {
         _currentTab = tab;
       });
     };
     final Widget title = widget.titleBuilder != null
-        ? widget.titleBuilder(context, tab, definition, _currentTab == tab)
+        ? widget.titleBuilder!(context, tab, definition, _currentTab == tab)
         : Text(
             definition.tabTitle ?? "",
             style: TextStyle(
@@ -266,7 +266,7 @@ class BuiltTabNavigatorState<T extends EnumClass>
             ),
           );
     final Widget icon = widget.iconBuilder != null
-        ? widget.iconBuilder(context, tab, definition, _currentTab == tab)
+        ? widget.iconBuilder!(context, tab, definition, _currentTab == tab)
         : Icon(
             definition.tabIcon,
             color: color,
@@ -274,7 +274,7 @@ class BuiltTabNavigatorState<T extends EnumClass>
     return widget.tabBuilder != null
         ? GestureDetector(
             onTap: tapHandler,
-            child: widget.tabBuilder(
+            child: widget.tabBuilder!(
                 context, tab, definition, isSelected, title, icon, tapHandler),
           )
         : Expanded(
@@ -306,7 +306,7 @@ class BuiltTabNavigatorState<T extends EnumClass>
     final TabNavigator tabNavigator = TabNavigator<T>(
       tab: tab,
       key: _tabNavigatorKeys[tab],
-      navigatorKey: _navigatorKeys[tab],
+      navigatorKey: _navigatorKeys![tab]!,
       initialRoute: definition.initialRoute.name,
       routes: definition.routes,
       didPop: widget.didPop,
@@ -320,7 +320,7 @@ class BuiltTabNavigatorState<T extends EnumClass>
     return Offstage(
       offstage: _currentTab != tab,
       child: widget.contentWrapBuilder != null
-          ? widget.contentWrapBuilder(
+          ? widget.contentWrapBuilder!(
               context,
               tab,
               isActive,
@@ -343,13 +343,13 @@ Widget _defaultScreenWrapper(Widget navigator, bool active, Duration duration) {
 class TabRoutesDefinition<T extends EnumClass> {
   final Map<EnumClass, WidgetBuilder> routes;
   final EnumClass initialRoute;
-  final String tabTitle;
-  final IconData tabIcon;
-  final List<NavigatorObserver> observers;
+  final String? tabTitle;
+  final IconData? tabIcon;
+  final List<NavigatorObserver>? observers;
 
   TabRoutesDefinition({
-    @required this.routes,
-    @required this.initialRoute,
+    required this.routes,
+    required this.initialRoute,
     this.tabTitle,
     this.tabIcon,
     this.observers,
