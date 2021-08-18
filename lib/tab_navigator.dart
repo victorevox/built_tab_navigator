@@ -1,6 +1,6 @@
 part of built_tab_navigator;
 
-class TabNavigator<T extends EnumClass?> extends StatefulWidget {
+class TabNavigator<T extends EnumClass> extends StatefulWidget {
   TabNavigator({
     Key? key,
     required this.navigatorKey,
@@ -38,7 +38,7 @@ class TabNavigator<T extends EnumClass?> extends StatefulWidget {
   TabNavigatorState<T> createState() => TabNavigatorState<T>();
 }
 
-class TabNavigatorState<T extends EnumClass?> extends State<TabNavigator> {
+class TabNavigatorState<T extends EnumClass> extends State<TabNavigator> {
   BuildContext? _buildContext;
 
   BuildContext? get buildContext => _buildContext;
@@ -81,7 +81,7 @@ class TabNavigatorState<T extends EnumClass?> extends State<TabNavigator> {
         final builder = routeBuilders[routeSettings.name!];
         if (widget.onGenerateRoute is Function) {
           return widget.onGenerateRoute!(
-              routeSettings, routeEnum, widget.tab!, builder);
+              routeSettings, routeEnum, widget.tab, builder);
         }
         return MaterialPageRoute(
           settings: routeSettings,
@@ -101,7 +101,7 @@ class TabNavigatorState<T extends EnumClass?> extends State<TabNavigator> {
   }
 }
 
-class _TabNavigatorObserver<T extends EnumClass?> extends NavigatorObserver {
+class _TabNavigatorObserver<T extends EnumClass> extends NavigatorObserver {
   final T tab;
 
   /// [didPop] navigationObserver callback
@@ -117,7 +117,7 @@ class _TabNavigatorObserver<T extends EnumClass?> extends NavigatorObserver {
   void Function(T tab, Route? newRoute, Route? oldRoute)? _didReplace;
 
   _TabNavigatorObserver(
-    T this.tab, {
+    this.tab, {
     void Function(T tab, Route route, Route? previousRoute)? didPop,
     void Function(T tab, Route route, Route? previousRoute)? didPush,
     void Function(T tab, Route route, Route? previousRoute)? didRemove,

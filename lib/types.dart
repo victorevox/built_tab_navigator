@@ -1,7 +1,7 @@
 part of built_tab_navigator;
 
 typedef TabContentWrapBuilder = Widget Function(
-    BuildContext context, EnumClass? tab, bool isActive, Widget content);
+    BuildContext context, EnumClass tab, bool isActive, Widget content);
 typedef OnGenerateRouteFn<T> = Route<dynamic> Function(
     RouteSettings routeSettings, T tab, EnumClass route, WidgetBuilder? child);
 typedef IconBuilder<T> = Widget Function(

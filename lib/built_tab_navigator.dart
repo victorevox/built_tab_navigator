@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 part 'tab_navigator.dart';
 part 'types.dart';
 
-class BuiltTabNavigator<T extends EnumClass?> extends StatefulWidget {
+class BuiltTabNavigator<T extends EnumClass> extends StatefulWidget {
   /// Defines default [selectedTab]
 
   /// Defines the [tabs] of this widget
@@ -114,7 +114,7 @@ class BuiltTabNavigator<T extends EnumClass?> extends StatefulWidget {
   BuiltTabNavigatorState<T> createState() => BuiltTabNavigatorState<T>();
 }
 
-class BuiltTabNavigatorState<T extends EnumClass?>
+class BuiltTabNavigatorState<T extends EnumClass>
     extends State<BuiltTabNavigator> {
   Map<T, GlobalKey<NavigatorState>>? _navigatorKeys;
   late Map<T, GlobalKey<TabNavigatorState>> _tabNavigatorKeys;
@@ -284,13 +284,10 @@ class BuiltTabNavigatorState<T extends EnumClass?>
                 height: double.infinity,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[]
-                    ..addAll(icon != null
-                        ? [
-                            icon,
-                          ]
-                        : [])
-                    ..add(title),
+                  children: <Widget>[
+                    icon,
+                    title,
+                  ],
                 ),
               ),
             ),
