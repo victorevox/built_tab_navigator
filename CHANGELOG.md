@@ -1,3 +1,6 @@
+## [1.0.1] - 09/08/21.
+* Null Safety fixes
+
 ## [1.0.0] - 09/08/21.
 * Null Safety
 
