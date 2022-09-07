@@ -1,6 +1,5 @@
 import 'package:built_value/built_value.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 Widget baseScreen(BuildContext context, String title, [EnumClass route]) {
   return Container(

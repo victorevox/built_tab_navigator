@@ -2,7 +2,6 @@ library built_tab_navigator;
 
 import 'package:built_value/built_value.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 part 'tab_navigator.dart';
 part 'types.dart';
