@@ -1,3 +1,6 @@
+## [1.2.0] - 07/09/22
+* Upgrade to flutter 3.0.x
+
 ## [1.0.1] - 09/08/21.
 * Null Safety fixes
 
